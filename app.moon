@@ -148,9 +148,25 @@ class extends lapis.Application
         @html ->
             element "table", ->
                 tr ->
-                    th "Track"
+                    th "Artist - Title [Album]"
                     th "Play count"
                 for track in *tracks
                     tr ->
                         td track.track
                         td track.playcount
+
+    [tracklist_edit: "/tracklist/edit"]: respond_to {
+        GET: =>
+            tracks = Tracks\select "* ORDER BY track ASC"
+            render: true
+
+        POST: =>
+            track = Tracks\find id: @params.id
+            track\update {
+                track: @params.track
+                playcount: tonumber(@params.playcount)
+            }
+
+            @info = "Track updated."
+            render: true
+    }
