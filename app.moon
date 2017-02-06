@@ -174,10 +174,14 @@ class extends lapis.Application
     }
 
     "/run-once": =>
-        episodes = Episodes\select "*"
-        for episode in *episodes
-            for i=1,#episode.tracklist
-                if episode.tracklist[i] == 9 or episode.tracklist[i] == 10
-                    episode.tracklist[i] = 25
-                    episode\update {tracklist: db.array episode.tracklist}
+        --episodes = Episodes\select "*"
+        --for episode in *episodes
+        --    for i=1,#episode.tracklist
+        --        if episode.tracklist[i] == 9 or episode.tracklist[i] == 10
+        --            episode.tracklist[i] = 25
+        --            episode\update {tracklist: db.array episode.tracklist}
+        track = Tracks\find id: 9
+        track\delete!
+        track = Tracks\find id: 10
+        track\delete!
         @html -> p "Done."
