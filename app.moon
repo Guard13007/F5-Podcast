@@ -157,7 +157,6 @@ class extends lapis.Application
 
     [tracklist_edit: "/tracklist/edit"]: respond_to {
         GET: =>
-            tracks = Tracks\select "* ORDER BY track ASC"
             render: true
 
         POST: =>

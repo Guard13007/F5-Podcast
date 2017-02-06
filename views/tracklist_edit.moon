@@ -1,7 +1,10 @@
 import Widget from require "lapis.html"
 
+Tracks = require "models.Tracks"
+
 class extends Widget
     content: =>
+        tracks = Tracks\select "* ORDER BY track ASC"
         element "table", ->
             tr ->
                 th "track"
