@@ -46,7 +46,7 @@ class extends lapis.Application
         return redirect_to: @url_for("post", pubdate: episode.pubdate), status: 301
 
     [post: "/post/:pubdate"]: =>
-        episode = Episodes\find pubdate: @params.pubdate\gsub "%20", " "
+        episode = Episodes\find pubdate: @params.pubdate\gsub "%%20", " "
         unless episode.status == Episodes.statuses.published
             return redirect_to: @url_for("index")
 
