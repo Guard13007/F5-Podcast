@@ -1,4 +1,4 @@
-import Model from require "lapis.db.model"
+import Model, enum from require "lapis.db.model"
 
 class Episodes extends Model
     @statuses: enum {

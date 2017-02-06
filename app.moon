@@ -140,3 +140,15 @@ class extends lapis.Application
             else
                 return redirect_to: @url_for("index")   --NOTE temporary
     }
+
+    [tracklist: "/tracklist"]: =>
+        tracks = Tracks\select "* ORDER BY playcount DESC"
+        @html ->
+            element "table", ->
+                tr ->
+                    th "Track"
+                    th "Play count"
+                for track in *tracks
+                    tr ->
+                        td track.track
+                        td track.playcount
