@@ -114,7 +114,7 @@ class extends lapis.Application
             tracks = "ARRAY("
             if status == Episodes.statuses.published
                 pubdate = db.format_date!
-                for name in @params.tracklist\gmatch ".-\n"
+                for name in string.gmatch(@params.tracklist, ".-\n")
                     if track = Tracks\find track: name\sub(1, -2)
                         track\update { playcount: track.playcount + 1 }
                         tracks ..= track.id..","
