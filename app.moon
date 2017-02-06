@@ -171,3 +171,10 @@ class extends lapis.Application
             @info = "Track updated."
             render: true
     }
+
+    "/run-once": =>
+        episodes = Episodes\select "*"
+        for episode in *episodes
+            for count,track in *episode.tracklist
+                if track == 9 or track == 10
+                    episode.tracklist[count] = track
