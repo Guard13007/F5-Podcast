@@ -3,4 +3,4 @@
 	url = https://github.com/lazuscripts/users
 [submodule "githook"]
 	path = githook
-	url = git@github.com:lazuscripts/githook.git
+	url = https://github.com/lazuscripts/githook
