@@ -32,20 +32,21 @@ class extends lapis.Application
         episodes = episodes\get_page page
 
         @html ->
+            script src: @build_url "static/js/marked.min.js"
+            link rel: "stylesheet", href: @build_url "static/highlight/styles/solarized-dark.css"
+            script src: @build_url "static/highlight/highlight.pack.js"
+            script -> raw "
+                marked.setOptions({
+                    highlight: function(code) { return hljs.highlightAuto(code).value; },
+                    smartypants: true
+                });
+                hljs.initHighlightingOnLoad();
+            "
+
             for episode in *episodes
                 h2 episode.title
                 h4 episode.pubdate\sub 1, 10
 
-                script src: @build_url "static/js/marked.min.js"
-                link rel: "stylesheet", href: @build_url "static/highlight/styles/solarized-dark.css"
-                script src: @build_url "static/highlight/highlight.pack.js"
-                script -> raw "
-                    marked.setOptions({
-                        highlight: function(code) { return hljs.highlightAuto(code).value; },
-                        smartypants: true
-                    });
-                    hljs.initHighlightingOnLoad();
-                "
                 div id: "post_#{episode.id}"
                 script -> raw "document.getElementById('post_#{episode.id}').innerHTML = marked('#{episode.description\gsub("\\", "\\\\\\\\")\gsub("'", "\\'")\gsub("\n", "\\n")\gsub("\r", "")}');"
 
@@ -68,7 +69,20 @@ class extends lapis.Application
         @html ->
             h2 episode.title
             h4 episode.pubdate\sub 1, 10
-            p episode.description
+
+            script src: @build_url "static/js/marked.min.js"
+            link rel: "stylesheet", href: @build_url "static/highlight/styles/solarized-dark.css"
+            script src: @build_url "static/highlight/highlight.pack.js"
+            script -> raw "
+                marked.setOptions({
+                    highlight: function(code) { return hljs.highlightAuto(code).value; },
+                    smartypants: true
+                });
+                hljs.initHighlightingOnLoad();
+            "
+            div id: "post_#{episode.id}"
+            script -> raw "document.getElementById('post_#{episode.id}').innerHTML = marked('#{episode.description\gsub("\\", "\\\\\\\\")\gsub("'", "\\'")\gsub("\n", "\\n")\gsub("\r", "")}');"
+
             tracks = Tracks\find_all episode.tracklist
             ol ->
                 for track in *tracks
