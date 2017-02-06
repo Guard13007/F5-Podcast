@@ -2,7 +2,6 @@ lapis = require "lapis"
 db = require "lapis.db"
 
 import respond_to from require "lapis.application"
-import insert from table
 
 Episodes = require "models.Episodes"
 Tracks = require "models.Tracks"
@@ -112,19 +111,20 @@ class extends lapis.Application
             --TODO make a thing to handle drafts
 
             local pubdate
-            tracks = {}
+            tracks = "ARRAY("
             if status == Episodes.statuses.published
                 pubdate = db.format_date!
                 for name in @params.tracklist\gmatch ".-\n"
                     if track = Tracks\find track: name\sub(1, -2)
                         track\update { playcount: track.playcount + 1 }
-                        insert tracks, track.id
+                        tracks ..= track.id..","
                     else
                         track = Tracks\create {
                             track: name\sub(1, -2)
                             playcount: 1
                         }
-                        insert tracks, track.id
+                        tracks ..= track.id..","
+                tracks = tracks\sub(1, -2)..")"
             else
                 pubdate = "1970-01-01 00:00:00"
 
@@ -134,7 +134,7 @@ class extends lapis.Application
                 download_uri: "static/mp3/#{@params.file_name}"
                 status: @params.status
                 pubdate: pubdate
-                tracklist: db.array tracks
+                tracklist: db.raw tracks
             }
 
             if episode.status == Episodes.statuses.published
