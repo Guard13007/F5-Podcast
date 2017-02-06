@@ -178,3 +178,4 @@ class extends lapis.Application
             for count,track in *episode.tracklist
                 if track == 9 or track == 10
                     episode.tracklist[count] = track
+                    episode\update "tracklist"
