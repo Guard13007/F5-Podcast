@@ -72,7 +72,7 @@ class extends lapis.Application
             unless @session.id
                 return redirect_to: @url_for "index"
             user = Users\find id: @session.id
-            unless user.admin
+            unless user and user.admin
                 return redirect_to: @url_for "index"
 
             @html ->
@@ -102,7 +102,7 @@ class extends lapis.Application
             unless @session.id
                 return redirect_to: @url_for "index"
             user = Users\find id: @session.id
-            unless user.admin
+            unless user and user.admin
                 return redirect_to: @url_for "index"
 
             --title & description should exist, but don't need to be verified
@@ -131,7 +131,7 @@ class extends lapis.Application
             episode = Episodes\create {
                 title: @params.title
                 description: @params.description
-                download_uri: "static/mp3/#{@params.file_name\gsub " ", "%20"}"
+                download_uri: "static/mp3/#{@params.file_name}"
                 status: @params.status
                 pubdate: pubdate
                 tracklist: db.array tracks
