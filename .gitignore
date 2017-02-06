@@ -1,0 +1,8 @@
+logs/
+*.lua
+nginx.conf.compiled
+secret.moon
+*_temp/
+dhparams.pem
+f5com.service
+f5dev.service
