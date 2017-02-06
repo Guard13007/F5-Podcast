@@ -174,12 +174,10 @@ class extends lapis.Application
     }
 
     "/run-once": =>
-        str = ""
         episodes = Episodes\select "*"
         for episode in *episodes
-            for track in *episode.tracklist
-                if track == 9 or track == 10
-                    str ..= " another detected!"
-                    track = 25
+            for i=1,#episode.tracklist
+                if episode.tracklist[i] == 9 or episode.tracklist[i] == 10
+                    episode.tracklist[i] = 25
                     episode\update {tracklist: db.array episode.tracklist}
-        @html -> p str
+        @html -> p "Done."
