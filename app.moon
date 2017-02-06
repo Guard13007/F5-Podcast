@@ -2,6 +2,7 @@ lapis = require "lapis"
 db = require "lapis.db"
 
 import respond_to from require "lapis.application"
+import is_admin from require "helpers"
 import insert from table
 
 Episodes = require "models.Episodes"
@@ -142,6 +143,28 @@ class extends lapis.Application
     [tracklist: "/tracklist"]: =>
         tracks = Tracks\select "* ORDER BY playcount DESC"
         @html ->
+            div ->
+                a href: @url_for("tracklist_alphabetical"), "Alphabetical"
+                if is_admin!
+                    text " | "
+                    a href: @url_for("tracklist_edit"), "Edit Tracks"
+            element "table", ->
+                tr ->
+                    th "Artist - Title [Album]"
+                    th "Play count"
+                for track in *tracks
+                    tr ->
+                        td track.track
+                        td track.playcount
+
+    [tracklist_alphabetical: "/tracklist/alphabetical"]: =>
+        tracks = Tracks\select "* ORDER BY track ASC"
+        @html ->
+            div ->
+                a href: @url_for("tracklist"), "Play count"
+                if is_admin!
+                    text " | "
+                    a href: @url_for("tracklist_edit"), "Edit Tracks"
             element "table", ->
                 tr ->
                     th "Artist - Title [Album]"
@@ -173,15 +196,15 @@ class extends lapis.Application
             render: true
     }
 
-    "/run-once": =>
+    --"/run-once": =>
         --episodes = Episodes\select "*"
         --for episode in *episodes
         --    for i=1,#episode.tracklist
         --        if episode.tracklist[i] == 9 or episode.tracklist[i] == 10
         --            episode.tracklist[i] = 25
         --            episode\update {tracklist: db.array episode.tracklist}
-        track = Tracks\find id: 9
-        track\delete!
-        track = Tracks\find id: 10
-        track\delete!
-        @html -> p "Done."
+        --track = Tracks\find id: 9
+        --track\delete!
+        --track = Tracks\find id: 10
+        --track\delete!
+        --@html -> p "Done."

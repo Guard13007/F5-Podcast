@@ -5,6 +5,10 @@ Tracks = require "models.Tracks"
 class extends Widget
     content: =>
         tracks = Tracks\select "* ORDER BY track ASC"
+        div ->
+            a href: @url_for("tracklist_alphabetical"), "Alphabetical"
+            text " | "
+            a href: @url_for("tracklist"), "Play count"
         element "table", ->
             tr ->
                 th "track"

@@ -1,5 +1,7 @@
 html = require "lapis.html"
 
+import is_admin from require "helpers"
+
 Users = require "users.models.Users"
 
 class extends html.Widget
@@ -26,11 +28,9 @@ class extends html.Widget
                         a href: "mailto:refreshformusic@gmail.com", "Email"
                         text " | "
                         a href: @url_for("tracklist"), "Full Tracklist"
-                        if @session.id
-                            if user = Users\find id: @session.id
-                                if user.admin
-                                    text " | "
-                                    a href: @url_for("new"), "New Episode"
+                        if is_admin!
+                            text " | "
+                            a href: @url_for("new"), "New Episode"
 
                     hr!
 
