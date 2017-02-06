@@ -1,6 +1,7 @@
 lapis = require "lapis"
 db = require "lapis.db"
 
+import respond_to from require "lapis.application"
 import insert from table
 
 Episodes = require "models.Episodes"
