@@ -121,7 +121,7 @@ class extends lapis.Application
                         insert tracks, track.id
                     else
                         track = Tracks\create {
-                            track: name\sub 1, 2
+                            track: name\sub 1, -2
                             playcount: 1
                         }
                         insert tracks, track.id
