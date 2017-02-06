@@ -115,7 +115,7 @@ class extends lapis.Application
             tracks = {}
             --if @params.status == Episodes.statuses.published
             pubdate = db.format_date!
-            for name in @params.tracklist\gmatch ".-\n"
+            for name in (@params.tracklist.."\n")\gmatch ".-\n"
                 if track = Tracks\find track: name\sub 1, -2
                     track\update { playcount: track.playcount + 1 }
                     insert tracks, track.id
@@ -131,7 +131,7 @@ class extends lapis.Application
             episode = Episodes\create {
                 title: @params.title
                 description: @params.description
-                download_uri: "static/mp3/#{@params.file_name}"
+                download_uri: "static/mp3/#{@params.file_name\gsub " ", "%20"}"
                 status: @params.status
                 pubdate: pubdate
                 tracklist: db.array tracks
