@@ -116,12 +116,12 @@ class extends lapis.Application
             if status == Episodes.statuses.published
                 pubdate = db.format_date!
                 for name in @params.tracklist\gmatch ".-\n"
-                    if track = Tracks\find track: name\sub 1, -2
+                    if track = Tracks\find track: name\sub(1, -2)
                         track\update { playcount: track.playcount + 1 }
                         insert tracks, track.id
                     else
                         track = Tracks\create {
-                            track: name\sub 1, -2
+                            track: name\sub(1, -2)
                             playcount: 1
                         }
                         insert tracks, track.id
