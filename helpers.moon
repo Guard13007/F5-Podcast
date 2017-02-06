@@ -1,4 +1,4 @@
-is_admin = ->
+is_admin = (self) ->
     if @session.id
         if user = Users\find id: @session.id
             return user.admin

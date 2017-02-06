@@ -145,7 +145,7 @@ class extends lapis.Application
         @html ->
             div ->
                 a href: @url_for("tracklist_alphabetical"), "Alphabetical"
-                if is_admin!
+                if is_admin @
                     text " | "
                     a href: @url_for("tracklist_edit"), "Edit Tracks"
             element "table", ->
@@ -162,7 +162,7 @@ class extends lapis.Application
         @html ->
             div ->
                 a href: @url_for("tracklist"), "Play count"
-                if is_admin!
+                if is_admin @
                     text " | "
                     a href: @url_for("tracklist_edit"), "Edit Tracks"
             element "table", ->

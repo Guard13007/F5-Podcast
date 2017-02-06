@@ -28,7 +28,7 @@ class extends html.Widget
                         a href: "mailto:refreshformusic@gmail.com", "Email"
                         text " | "
                         a href: @url_for("tracklist"), "Full Tracklist"
-                        if is_admin!
+                        if is_admin @
                             text " | "
                             a href: @url_for("new"), "New Episode"
 
