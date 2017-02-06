@@ -75,27 +75,28 @@ class extends lapis.Application
             unless user.admin
                 return redirect_to: @url_for "index"
 
-            form {
-                action: @url_for "new"
-                method: "POST"
-                enctype: "multipart/form-data"
-            }, ->
-                p "Title: "
-                input type: "text", name: "title"
-                p "Description: "
-                textarea cols: 80, rows: 13, name: "description"
-                p "Tracklist: "
-                textarea cols: 80, rows: 13, name: "tracklist"
-                p "File name: "
-                input type: "text", name: "file_name"
-                br!
-                element "select", name: "status", ->
-                    for status in *Episodes.statuses
-                        if status == Episodes.statuses.draft
-                            option value: Episodes.statuses[status], selected: true, status
-                        else
-                            option value: Episodes.statuses[status], status
-                input type: "submit"
+            @html ->
+                form {
+                    action: @url_for "new"
+                    method: "POST"
+                    enctype: "multipart/form-data"
+                }, ->
+                    p "Title: "
+                    input type: "text", name: "title"
+                    p "Description: "
+                    textarea cols: 80, rows: 13, name: "description"
+                    p "Tracklist: "
+                    textarea cols: 80, rows: 13, name: "tracklist"
+                    p "File name: "
+                    input type: "text", name: "file_name"
+                    br!
+                    element "select", name: "status", ->
+                        for status in *Episodes.statuses
+                            if status == Episodes.statuses.draft
+                                option value: Episodes.statuses[status], selected: true, status
+                            else
+                                option value: Episodes.statuses[status], status
+                    input type: "submit"
 
         POST: =>
             unless @session.id
