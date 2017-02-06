@@ -18,6 +18,7 @@ class extends lapis.Application
             @session.info = nil
 
     @include "users/users"
+    @include "githook/githook"
 
     layout: "default"
 
@@ -173,9 +174,12 @@ class extends lapis.Application
     }
 
     "/run-once": =>
+        str = ""
         episodes = Episodes\select "*"
         for episode in *episodes
-            for count,track in *episode.tracklist
+            for track in *episode.tracklist
                 if track == 9 or track == 10
-                    episode.tracklist[count] = track
-                    episode\update {tracklist: db.array episode.tracklist}
+                    str ..= " another detected!"
+                    --episode.tracklist[count] = track
+                    --episode\update {tracklist: db.array episode.tracklist}
+        @html -> p str
