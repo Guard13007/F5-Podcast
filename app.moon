@@ -68,13 +68,14 @@ class extends lapis.Application
             p "Coming soon! (I just haven't written a generator yet and I'm working on stuffs.)"
 
     [new: "/new"]: respond_to {
-        GET: =>
+        before: =>
             unless @session.id
-                return redirect_to: @url_for "index"
+                @write redirect_to: @url_for "index"
             user = Users\find id: @session.id
             unless user and user.admin
-                return redirect_to: @url_for "index"
+                @write redirect_to: @url_for "index"
 
+        GET: =>
             @html ->
                 form {
                     action: @url_for "new"
@@ -99,12 +100,6 @@ class extends lapis.Application
                     input type: "submit"
 
         POST: =>
-            unless @session.id
-                return redirect_to: @url_for "index"
-            user = Users\find id: @session.id
-            unless user and user.admin
-                return redirect_to: @url_for "index"
-
             --title & description should exist, but don't need to be verified
             --tracklist needs to be processed (should not be processed if status is a draft!)
             --file_name needs to be turned into download_uri
@@ -156,6 +151,13 @@ class extends lapis.Application
                         td track.playcount
 
     [tracklist_edit: "/tracklist/edit"]: respond_to {
+        before: =>
+            unless @session.id
+                @write redirect_to: @url_for "index"
+            user = Users\find id: @session.id
+            unless user and user.admin
+                @write redirect_to: @url_for "index"
+
         GET: =>
             render: true
 

@@ -24,6 +24,8 @@ class extends html.Widget
                         a href: "https://guard13007.com", target: "_blank", "Other Stuff I Do"
                         text " | "
                         a href: "mailto:refreshformusic@gmail.com", "Email"
+                        text " | "
+                        a href: @url_for("tracklist"), "Full Tracklist"
                         if @session.id
                             if user = Users\find id: @session.id
                                 if user.admin
