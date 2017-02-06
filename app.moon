@@ -24,7 +24,7 @@ class extends lapis.Application
     "*": =>
         return redirect_to: @url_for("index")
 
-    [index: "(/:page[%d])"]: =>
+    [index: "/(:page[%d])"]: =>
         episodes = Episodes\paginated "WHERE status = ? ORDER BY pubdate DESC", Episodes.statuses.published, per_page: 10
         page = tonumber(@params.page) or 1
         episodes = episodes\get_page page
