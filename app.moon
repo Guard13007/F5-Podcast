@@ -113,20 +113,20 @@ class extends lapis.Application
 
             local pubdate
             tracks = {}
-            if @params.status == Episodes.statuses.published
-                pubdate = db.format_date!
-                for name in @params.tracklist\gmatch ".-\n"
-                    if track = Tracks\find track: name\sub 1, -2
-                        track\update { playcount: track.playcount + 1 }
-                        insert tracks, track.id
-                    else
-                        track = Tracks\create {
-                            track: name\sub(1, -2)
-                            playcount: 1
-                        }
-                        insert tracks, track.id
-            else
-                pubdate = "1970-01-01 00:00:00"
+            --if @params.status == Episodes.statuses.published
+            pubdate = db.format_date!
+            for name in @params.tracklist\gmatch ".-\n"
+                if track = Tracks\find track: name\sub 1, -2
+                    track\update { playcount: track.playcount + 1 }
+                    insert tracks, track.id
+                else
+                    track = Tracks\create {
+                        track: name\sub(1, -2)
+                        playcount: 1
+                    }
+                    insert tracks, track.id
+            --else
+            --    pubdate = "1970-01-01 00:00:00"
 
             episode = Episodes\create {
                 title: @params.title
