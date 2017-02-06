@@ -180,6 +180,6 @@ class extends lapis.Application
             for track in *episode.tracklist
                 if track == 9 or track == 10
                     str ..= " another detected!"
-                    --episode.tracklist[count] = track
-                    --episode\update {tracklist: db.array episode.tracklist}
+                    track = 25
+                    episode\update {tracklist: db.array episode.tracklist}
         @html -> p str
