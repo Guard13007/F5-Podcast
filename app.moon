@@ -147,7 +147,7 @@ class extends lapis.Application
             tracks = Tracks\find_all episode.tracklist
             tracklist, new_tracks, removed_tracks = {}, {}, {}
             for name in (@params.tracklist.."\n")\gmatch ".-\n"
-                table.insert tracklist, name
+                table.insert tracklist, name\sub(1, -2)
             for track in *tracks
                 unless tracklist[track.track]
                     table.insert removed_tracks, track
