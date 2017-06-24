@@ -33,6 +33,4 @@ Tracks = require "models.Tracks"
         tracks = Tracks\select "WHERE track SIMILAR TO ?", "\n%|%\n%|%\n"
         for track in *tracks
             track\delete!
-        track = Tracks\find track: ""
-        track\delete!
 }
