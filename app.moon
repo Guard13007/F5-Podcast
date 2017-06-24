@@ -109,7 +109,7 @@ class extends lapis.Application
                 @write redirect_to: @url_for "index"
 
             tracks = Tracks\find_all episode.tracklist
-            local tracklist_text
+            tracklist_text = ""
             for track in *tracks
                 tracklist_text ..= track.track .. "\n"
 
