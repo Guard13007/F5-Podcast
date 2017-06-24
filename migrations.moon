@@ -2,6 +2,8 @@ db = require "lapis.db"
 
 import create_table, types, drop_table, add_column, rename_column from require "lapis.db.schema"
 
+Tracks = require "models.Tracks"
+
 {
     [1]: =>
         create_table "episodes", {
@@ -10,7 +12,7 @@ import create_table, types, drop_table, add_column, rename_column from require "
             {"description", types.text}
             {"tracklist", types.foreign_key array: true}
             {"download_uri", types.text unique: true}
-            {"pubdate", types.time} -- not unique because a placeholder is used for unpublished episodes
+            {"pubdate", types.time} -- not unique because a placeholder was used for unpublished episodes; in retrospect, a bad idea maybe
             {"status", types.integer default: 1}
 
             {"created_at", types.time}
@@ -27,4 +29,10 @@ import create_table, types, drop_table, add_column, rename_column from require "
             {"digest", types.text}
             {"admin", types.boolean default: false}
         }
+    [2]: =>
+        tracks = Tracks\select "WHERE track SIMILAR TO ?", "\n%|%\n%|%\n"
+        for track in *tracks
+            track\delete!
+        track = Tracks\find track: ""
+        track\delete!
 }
