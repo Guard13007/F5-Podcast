@@ -35,4 +35,8 @@ Tracks = require "models.Tracks"
             track\delete!
         track = Tracks\find track: ""
         track\delete!
+    [3]: =>
+        tracks = Tracks\select "WHERE playcount = ?", -1
+        for track in *tracks
+            track\delete!
 }
