@@ -95,7 +95,7 @@ class extends lapis.Application
                   text " | "
                   a href: @url_for("post_edit", id: episode.id), "Edit Post"
 
-    [edit_post: "/edit/:id[%d]"]: respond_to {
+    [post_edit: "/edit/:id[%d]"]: respond_to {
         before: =>
             unless @session.id
                 @write redirect_to: @url_for "index"
@@ -115,7 +115,7 @@ class extends lapis.Application
 
             @html ->
                 form {
-                    action: @url_for "edit_post"
+                    action: @url_for "post_edit"
                     method: "POST"
                     enctype: "multipart/form-data"
                 }, ->
@@ -201,7 +201,7 @@ class extends lapis.Application
             }
 
             @session.info = "Post Updated!"
-            return redirect_to: @url_for("edit_post", id: episode.id)
+            return redirect_to: @url_for("post_edit", id: episode.id)
     }
 
     [rss: "/rss"]: =>
@@ -279,7 +279,7 @@ class extends lapis.Application
             if episode.status == Episodes.statuses.published
                 return redirect_to: @url_for("post", pubdate: episode.pubdate)
             else
-                return redirect_to: @url_for("edit_post", id: episode.id)
+                return redirect_to: @url_for("post_edit", id: episode.id)
     }
 
     [tracklist: "/tracklist"]: =>
