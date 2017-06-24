@@ -332,10 +332,13 @@ class extends lapis.Application
 
         POST: =>
             track = Tracks\find id: @params.id
-            track\update {
-                track: @params.track
-                playcount: tonumber(@params.playcount)
-            }
+            if -1 == tonumber @params.playcount
+                track\delete!
+            else
+                track\update {
+                    track: @params.track
+                    playcount: tonumber(@params.playcount)
+                }
 
             @info = "Track updated."
             render: true
