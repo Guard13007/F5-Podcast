@@ -126,7 +126,7 @@ class extends lapis.Application
                     p "Tracklist (Separated by newlines, 'Artist - Title [Album]'): "
                     textarea cols: 80, rows: 13, name: "tracklist", tracklist_text
                     p "Download URI: "
-                    input type: "text", name: "download_uri", value: episode.download_uri
+                    input type: "text", name: "download_uri", value: episode.download_uri\gsub "%%20", " "
                     p "Publish Date: "
                     input type: "text", name: "pubdate", value: episode.pubdate
                     br!
