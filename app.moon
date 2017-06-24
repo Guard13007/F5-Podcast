@@ -57,6 +57,7 @@ class extends lapis.Application
 
             --TODO navigation!
 
+    -- redirects from the original form of post URLs
     "/post/:id[%d]": =>
         episode = Episodes\find id: @params.id
         return redirect_to: @url_for("post", pubdate: episode.pubdate), status: 301
@@ -90,6 +91,119 @@ class extends lapis.Application
             div ->
                 a href: @build_url(episode.download_uri), target: "_blank", "Listen Now"
 
+                if is_admin @
+                  text " | "
+                  a href: @url_for("post_edit", id: episode.id), "Edit Post"
+
+    [edit_post: "/edit/:id[%d]"]: respond_to {
+        before: =>
+            unless @session.id
+                @write redirect_to: @url_for "index"
+            user = Users\find id: @session.id
+            unless user and user.admin
+                @write redirect_to: @url_for "index"
+
+        GET: =>
+            episode = Episodes\find id: @params.id
+            unless episode
+                @write redirect_to: @url_for "index"
+
+            tracks = Tracks\find_all episode.tracklist
+            local tracklist_text
+            for track in *tracks
+                tracklist_text ..= track.track .. "\n"
+
+            @html ->
+                form {
+                    action: @url_for "edit_post"
+                    method: "POST"
+                    enctype: "multipart/form-data"
+                }, ->
+                    p "Title: "
+                    input type: "text", name: "title", value: episode.title
+                    p "Description: "
+                    textarea cols: 80, rows: 13, name: "description", episode.description
+                    p "Tracklist (Separated by newlines, 'Artist - Title [Album]'): "
+                    textarea cols: 80, rows: 13, name: "tracklist", tracklist_text
+                    p "Download URI: "
+                    input type: "text", name: "download_uri", value: episode.download_uri
+                    p "Publish Date: "
+                    input type: "text", name: "pubdate", value: episode.pubdate
+                    br!
+                    element "select", name: "status", ->
+                        for status in *Episodes.statuses
+                            if status == episode.draft
+                                option value: Episodes.statuses[status], selected: true, status
+                            else
+                                option value: Episodes.statuses[status], status
+                    input type: "hidden", name: "id", value: episode.id
+                    input type: "submit"
+
+        POST: =>
+            episode = Episodes\find id: @params.id
+            unless episode
+                @write redirect_to: @url_for "index"
+
+            tracks = Tracks\find_all episode.tracklist
+            tracklist, new_tracks, removed_tracks = {}, {}, {}
+            for name in (@params.tracklist.."\n")\gmatch ".-\n"
+                table.insert tracklist, name
+            for track in *tracks
+                unless tracklist[track.track]
+                    table.insert removed_tracks, track
+            for track in *tracklist
+                exists = false
+                for t in *tracks
+                    if t.track == track
+                        exists = true
+                        break
+                unless exists
+                    table.insert new_tracks, track
+
+            local public_playcount
+            if episode.status == Episodes.statuses.published
+                public_playcount = 1
+            else
+                public_playcount = 0
+
+            for track in removed_tracks
+                track\update {
+                  playcount: track.playcount - public_playcount
+                }
+
+            for track in new_tracks
+                if t = Tracks\find track: track
+                    t\update { playcount: t.playcount + public_playcount }
+                else
+                    t = Tracks\create {
+                        track: track
+                        playcount: public_playcount
+                    }
+
+            tracks = {}
+            for track in *tracklist
+                t = Tracks\find track: track
+                table.insert tracks, t.id
+
+            pubdate = @params.pubdate
+            if episode.status == Episodes.statuses.draft and @params.status == Episodes.statuses.published
+                pubdate = db.format_date!
+                for track in *tracks
+                    track\update { playcount: track.playcount + 1 }
+
+            episode\update {
+                title: @params.title
+                description: @params.description
+                download_uri: @params.download_uri
+                status: @params.status
+                pubdate: pubdate
+                tracklist: db.array tracks
+            }
+
+            @session.info = "Post Updated!"
+            return redirect_to: @url_for("edit_post", id: episode.id)
+    }
+
     [rss: "/rss"]: =>
         --TODO actually RSS feed
 
@@ -115,7 +229,7 @@ class extends lapis.Application
                     input type: "text", name: "title"
                     p "Description: "
                     textarea cols: 80, rows: 13, name: "description"
-                    p "Tracklist: "
+                    p "Tracklist (Separated by newlines, 'Artist - Title [Album]'): "
                     textarea cols: 80, rows: 13, name: "tracklist"
                     p "File name: "
                     input type: "text", name: "file_name"
@@ -130,27 +244,28 @@ class extends lapis.Application
 
         POST: =>
             --title & description should exist, but don't need to be verified
-            --tracklist needs to be processed (should not be processed if status is a draft!)
+            --tracklist needs to be processed (playcounts not updated for drafts!)
             --file_name needs to be turned into download_uri
-            --depending on status option with draft/published, set different pubdate
-            --TODO make a thing to handle drafts
 
-            local pubdate
             tracks = {}
-            --if @params.status == Episodes.statuses.published
             pubdate = db.format_date!
+
+            local public_playcount
+            if @params.status == Episodes.statuses.published
+                public_playcount = 1
+            else
+                public_playcount = 0
+
             for name in (@params.tracklist.."\n")\gmatch ".-\n"
                 if track = Tracks\find track: name\sub 1, -2
-                    track\update { playcount: track.playcount + 1 }
+                    track\update { playcount: track.playcount + public_playcount }
                     insert tracks, track.id
                 else
                     track = Tracks\create {
                         track: name\sub(1, -2)
-                        playcount: 1
+                        playcount: public_playcount
                     }
                     insert tracks, track.id
-            --else
-            --    pubdate = "1970-01-01 00:00:00"
 
             episode = Episodes\create {
                 title: @params.title
@@ -164,7 +279,7 @@ class extends lapis.Application
             if episode.status == Episodes.statuses.published
                 return redirect_to: @url_for("post", pubdate: episode.pubdate)
             else
-                return redirect_to: @url_for("index")   --NOTE temporary
+                return redirect_to: @url_for("edit_post", id: episode.id)
     }
 
     [tracklist: "/tracklist"]: =>
