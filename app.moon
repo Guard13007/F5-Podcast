@@ -166,12 +166,12 @@ class extends lapis.Application
             else
                 public_playcount = 0
 
-            for track in removed_tracks
+            for track in *removed_tracks
                 track\update {
                   playcount: track.playcount - public_playcount
                 }
 
-            for track in new_tracks
+            for track in *new_tracks
                 if t = Tracks\find track: track
                     t\update { playcount: t.playcount + public_playcount }
                 else
