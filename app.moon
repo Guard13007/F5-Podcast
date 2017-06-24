@@ -132,7 +132,7 @@ class extends lapis.Application
                     br!
                     element "select", name: "status", ->
                         for status in *Episodes.statuses
-                            if status == episode.draft
+                            if status == episode.status
                                 option value: Episodes.statuses[status], selected: true, status
                             else
                                 option value: Episodes.statuses[status], status
