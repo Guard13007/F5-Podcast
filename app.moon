@@ -182,9 +182,10 @@ class extends lapis.Application
                     }
 
             tracks = {}
-            for track in *tracklist
-                t = Tracks\find track: track
-                table.insert tracks, t.id
+            for name in (@params.tracklist.."\n")\gmatch ".-\n"
+                continue if #name == 2
+                track = Tracks\find track: name\sub(1, -2)
+                table.insert tracks, track.id
 
             pubdate = @params.pubdate
             if episode.status == Episodes.statuses.draft and @params.status == Episodes.statuses.published
