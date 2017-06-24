@@ -115,7 +115,7 @@ class extends lapis.Application
 
             @html ->
                 form {
-                    action: @url_for "post_edit"
+                    action: @url_for "post_edit", id: episode.id
                     method: "POST"
                     enctype: "multipart/form-data"
                 }, ->
