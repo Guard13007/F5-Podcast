@@ -6,3 +6,4 @@ secret.moon
 dhparams.pem
 f5com.service
 f5dev.service
+static/mp3/*
