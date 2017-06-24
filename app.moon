@@ -147,7 +147,8 @@ class extends lapis.Application
             tracks = Tracks\find_all episode.tracklist
             tracklist, new_tracks, removed_tracks = {}, {}, {}
             for name in (@params.tracklist.."\n")\gmatch ".-\n"
-                table.insert tracklist, name\sub(1, -2)
+                unless #name == 2
+                    table.insert tracklist, name\sub(1, -2)
             for track in *tracks
                 unless tracklist[track.track]
                     table.insert removed_tracks, track
@@ -257,6 +258,7 @@ class extends lapis.Application
                 public_playcount = 0
 
             for name in (@params.tracklist.."\n")\gmatch ".-\n"
+                continue if #name == 2
                 if track = Tracks\find track: name\sub 1, -2
                     track\update { playcount: track.playcount + public_playcount }
                     insert tracks, track.id
